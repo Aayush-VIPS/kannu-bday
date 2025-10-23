@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#ff6b9a">
+  <title>Happy Birthday Kittu ❤️</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Short+Stack&amp;family=Homemade+Apple&amp;display=swap'><link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+
+<!-- App Start Screen -->
+<div id="startScreen" class="start-screen">
+  <div class="start-content">
+    <h1 class="start-title">🎂</h1>
+    <h2 class="start-subtitle">Happy Birthday<br>Kittu! 💕</h2>
+    <button id="startBtn" class="start-button">
+      <span>Open Your Gift</span>
+      <span class="start-icon">🎁</span>
+    </button>
+    <p class="start-hint">Tap to begin the magic ✨</p>
+  </div>
+</div>
+
+<!-- Main App Container -->
+<div id="mainApp" class="main-app hidden">
+  
+  <!-- Papers Container -->
+  <div class="papers-container">
+    <div class="paper heart">
+      <p>Happy Birthday Kittu! 🎂</p>
+    </div>
+
+    <!-- Audio Player Card -->
+    <div class="paper audio-card">
+      <p class="p1">🎵 Your Special Song</p>
+      <audio id="audio" preload="auto" autoplay loop>
+        <source src="assets/Darkhaast From Shivaay-320kbps.mp3" type="audio/mpeg">
+        Your browser doesn't support audio.
+      </audio>
+    </div>
+    
+    <div class="paper image">
+      <p>and I fallen in</p>
+      <p>Love with You 😍</p>
+      <img src="images/1.jpeg" />
+    </div>
+
+    <div class="paper image">
+      <p>Beautiful Soul 💖</p>
+      <img src="images/5.jpeg" />
+    </div>
+
+    <div class="paper image">
+      <p>My Everything 🌟</p>
+      <img src="images/4.jpeg" />
+    </div>
+
+    <div class="paper image">
+      <p>Stunning Always ✨</p>
+      <img src="images/2.jpeg" />
+    </div>
+
+    <div class="paper image">
+      <p>How can be</p>
+      <p>someone so cute ❤️</p>
+    </div>
+
+    <div class="paper red">
+      <p class="p1">Me and My Favorite</p>
+      <p class="p2">Person 😍</p>
+    </div>
+
+    <div class="paper">
+      <p class="p1">You are Cute</p>
+      <p class="p1">Amazing <span style="color: red !important;">❤️</span></p>
+    </div>
+
+    <div class="paper">
+      <p class="p1">Love You Soooooo</p>
+      <p class="p1">Muchhh<span style="color: red !important;">💋</span></p>
+    </div>
+  </div>
+  <!-- End Papers Container -->
+
+<!-- Enhanced Bottom Lyric Bar with Controls -->
+<div id="lyricBar" class="lyric-bar">
+  <div class="lyric-controls">
+    <button id="prevBtn" class="ctrl-btn" title="Previous">⏮</button>
+    <button id="playPauseBtn" class="ctrl-btn play-btn" title="Play/Pause">▶</button>
+    <button id="nextBtn" class="ctrl-btn" title="Next">⏭</button>
+  </div>
+  
+  <div class="lyric-content">
+    <div id="currentLyric" class="lyric-text">Darkhaast 💕</div>
+  </div>
+  
+  <div class="progress-container">
+    <div class="time-display">
+      <span id="currentTime">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+    <div class="progress-bar">
+      <div id="progress" class="progress-fill"></div>
+      <input type="range" id="seek" class="seek-slider" min="0" max="100" value="0">
+    </div>
+  </div>
+</div>
+  
+<!-- Hidden Final Letter - Revealed on Click -->
+<div id="finalLetter" class="final-letter hidden">
+  <div class="letter-envelope" id="envelope">
+    <div class="envelope-flap"></div>
+    <div class="envelope-body">
+      <p class="envelope-text">Click to Open 💌</p>
+    </div>
+  </div>
+  
+  <div class="letter-content" id="letterContent">
+    <button class="close-letter" id="closeLetter">×</button>
+    <div class="letter-paper">
+      <h2>Dear Kittu,</h2>
+      <p>Happy Birthday to the most amazing person! 🎂</p>
+      <p>Every moment with you feels like magic. Your smile lights up my world, and your presence makes everything better.</p>
+      <p>On this special day, I want you to know how incredibly special you are to me. Thank you for being you! ✨</p>
+      <p>Here's to another year of wonderful memories, laughter, and love. May all your dreams come true! 💕</p>
+      <p class="signature">With all my love,<br>Always yours 💖</p>
+    </div>
+  </div>
+</div>
+
+<!-- Reveal Button -->
+<button id="revealBtn" class="reveal-btn">🎁 Click for a Special Surprise!</button>
+
+<!-- Polaroid Gallery Button -->
+<button id="polaroidBtn" class="polaroid-btn">📸 Our Memories</button>
+
+<!-- Polaroid Gallery Modal -->
+<div id="polaroidGallery" class="polaroid-gallery hidden">
+  <button class="close-polaroid" id="closePolaroid">×</button>
+  <h2 class="gallery-title">Our Special Moments 💕</h2>
+  
+  <div class="polaroid-container">
+    <!-- Polaroid items will be generated here -->
+    <div class="polaroid-item" data-media="images/1.jpeg" data-type="image">
+      <div class="polaroid-frame">
+        <div class="polaroid-photo">
+          <img src="images/1.jpeg" alt="Memory 1">
+        </div>
+        <div class="polaroid-caption">Beautiful us 💖</div>
+      </div>
+      <div class="polaroid-print-animation"></div>
+    </div>
+    
+    <div class="polaroid-item" data-media="images/2.jpeg" data-type="image">
+      <div class="polaroid-frame">
+        <div class="polaroid-photo">
+          <img src="images/2.jpeg" alt="Memory 2">
+        </div>
+        <div class="polaroid-caption">My favorite person ✨</div>
+      </div>
+      <div class="polaroid-print-animation"></div>
+    </div>
+    
+    <div class="polaroid-item" data-media="images/4.jpeg" data-type="image">
+      <div class="polaroid-frame">
+        <div class="polaroid-photo">
+          <img src="images/4.jpeg" alt="Memory 3">
+        </div>
+        <div class="polaroid-caption">Always smiling 🌟</div>
+      </div>
+      <div class="polaroid-print-animation"></div>
+    </div>
+    
+    <div class="polaroid-item" data-media="images/5.jpeg" data-type="image">
+      <div class="polaroid-frame">
+        <div class="polaroid-photo">
+          <img src="images/5.jpeg" alt="Memory 4">
+        </div>
+        <div class="polaroid-caption">Precious moments 💕</div>
+      </div>
+      <div class="polaroid-print-animation"></div>
+    </div>
+    
+    <!-- Add more polaroid-item divs here for your other photos/videos -->
+    <!-- For videos, set data-type="video" and use <video> instead of <img> -->
+    
+  </div>
+  
+  <div class="shake-instruction">
+    <p>💡 Tap a polaroid 3 times quickly to develop it! Or double-tap for instant reveal!</p>
+  </div>
+</div>
+
+</div>
+<!-- End Main App Container -->
+
+<!-- partial -->
+  <script src="./script.js"></script>
+  <script src="./lyrics.js"></script>
+  <script src="./letter.js"></script>
+  <script src="./polaroid.js"></script>
+  <script src="./app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyric Timing Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h1 { color: #ff6b9a; }
+    audio {
+      width: 100%;
+      margin: 20px 0;
+    }
+    .instructions {
+      background: #fff3f8;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .lyric-input {
+      width: 100%;
+      height: 300px;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 12px 24px;
+      background: #ff6b9a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #ff5589;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .current-line {
+      background: #fff3f8;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      min-height: 50px;
+      font-size: 20px;
+      color: #ff6b9a;
+      font-weight: bold;
+    }
+    .output {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 14px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .status {
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .status.ready { background: #d4edda; color: #155724; }
+    .status.recording { background: #fff3cd; color: #856404; }
+    .status.done { background: #cce5ff; color: #004085; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎵 Lyric Timing Tool for Darkhaast</h1>
+    
+    <div class="instructions">
+      <h3>How to use:</h3>
+      <ol>
+        <li>Paste your lyrics below (one line per line)</li>
+        <li>Load your song file</li>
+        <li>Click "Start Timing"</li>
+        <li>Play the song and press <strong>SPACEBAR</strong> at the start of each line</li>
+        <li>Copy the generated JSON at the end</li>
+      </ol>
+    </div>
+
+    <h3>Step 1: Paste Lyrics</h3>
+    <textarea id="lyricsInput" class="lyric-input" placeholder="Paste each lyric line here, one per line..."></textarea>
+
+    <h3>Step 2: Load Song</h3>
+    <input type="file" id="audioFile" accept="audio/*">
+    <audio id="audio" controls></audio>
+
+    <div class="controls">
+      <button id="startBtn" disabled>Start Timing</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <div id="status" class="status ready">Ready to start</div>
+
+    <h3>Current Line:</h3>
+    <div id="currentLine" class="current-line">-</div>
+
+    <h3>Generated JSON:</h3>
+    <div id="output" class="output">JSON will appear here...</div>
+
+    <button id="copyBtn" style="margin-top: 10px;" disabled>Copy JSON to Clipboard</button>
+  </div>
+
+  <script>
+    const lyricsInput = document.getElementById('lyricsInput');
+    const audioFile = document.getElementById('audioFile');
+    const audio = document.getElementById('audio');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const status = document.getElementById('status');
+    const currentLine = document.getElementById('currentLine');
+    const output = document.getElementById('output');
+    const copyBtn = document.getElementById('copyBtn');
+
+    let lyrics = [];
+    let timings = [];
+    let currentIndex = 0;
+    let isRecording = false;
+
+    // Enable start button when audio is loaded
+    audioFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        audio.src = url;
+        startBtn.disabled = false;
+      }
+    });
+
+    startBtn.addEventListener('click', () => {
+      lyrics = lyricsInput.value.split('\n').filter(l => l.trim());
+      if (lyrics.length === 0) {
+        alert('Please paste lyrics first!');
+        return;
+      }
+      
+      timings = [];
+      currentIndex = 0;
+      isRecording = true;
+      
+      status.className = 'status recording';
+      status.textContent = '🔴 Recording - Press SPACEBAR at start of each line';
+      currentLine.textContent = lyrics[0];
+      
+      audio.currentTime = 0;
+      audio.play();
+      startBtn.disabled = true;
+    });
+
+    resetBtn.addEventListener('click', () => {
+      isRecording = false;
+      currentIndex = 0;
+      timings = [];
+      audio.pause();
+      audio.currentTime = 0;
+      status.className = 'status ready';
+      status.textContent = 'Reset - Ready to start';
+      currentLine.textContent = '-';
+      output.textContent = 'JSON will appear here...';
+      startBtn.disabled = false;
+      copyBtn.disabled = true;
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && isRecording && currentIndex < lyrics.length) {
+        e.preventDefault();
+        
+        const time = audio.currentTime;
+        timings.push({
+          text: lyrics[currentIndex],
+          start: parseFloat(time.toFixed(3))
+        });
+        
+        currentIndex++;
+        
+        if (currentIndex < lyrics.length) {
+          currentLine.textContent = lyrics[currentIndex];
+        } else {
+          // Done!
+          isRecording = false;
+          status.className = 'status done';
+          status.textContent = '✅ Complete! Copy the JSON below';
+          currentLine.textContent = 'All done!';
+          
+          const json = JSON.stringify({ lines: timings }, null, 2);
+          output.textContent = json;
+          copyBtn.disabled = false;
+        }
+      }
+    });
+
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(output.textContent).then(() => {
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy JSON to Clipboard';
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
