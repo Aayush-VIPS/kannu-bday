@@ -7,6 +7,11 @@ html {
   overflow-x: hidden;
 }
 
+:root {
+  /* fallback for safe area insets (not all browsers support env()) */
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Start Screen Styles */
 .start-screen {
   position: fixed;
@@ -322,8 +327,9 @@ body {
     rgba(20,20,20,0.96), 
     rgba(30,30,30,0.92));
   backdrop-filter: blur(20px);
-  padding: 10px 30px 12px;
-  z-index: 10000;
+  /* make room for device safe-area and keep below top nav buttons */
+  padding: calc(8px + var(--safe-area-inset-bottom)) 30px  calc(12px + var(--safe-area-inset-bottom));
+  z-index: 9000;
   box-shadow: 0 -4px 30px rgba(0,0,0,0.5);
   border-top: 2px solid rgba(255,107,154,0.6);
   display: flex;
@@ -470,7 +476,8 @@ body {
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   body {
-    padding-bottom: 160px;
+    /* leave extra space for the bottom player; include safe-area inset */
+    padding-bottom: calc(180px + var(--safe-area-inset-bottom));
     overflow-x: hidden;
     overflow-y: auto;
   }
@@ -1221,5 +1228,38 @@ p {
   
   .lyrics-list li {
     font-size: 20px;
+  }
+}
+
+/* Compact lyric-bar for short/tallness-constrained screens */
+@media (max-height: 700px) {
+  .lyric-bar {
+    padding: calc(6px + var(--safe-area-inset-bottom)) 12px calc(8px + var(--safe-area-inset-bottom));
+    gap: 6px;
+  }
+
+  .lyric-controls {
+    gap: 8px;
+  }
+
+  .lyric-text {
+    display: none; /* hide lyrics to save vertical space on short screens */
+  }
+
+  .progress-container,
+  .time-display {
+    display: none;
+  }
+
+  .ctrl-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .play-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
   }
 }
