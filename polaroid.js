@@ -2,9 +2,7 @@
 const polaroidBtn = document.getElementById('polaroidBtn');
 const polaroidGallery = document.getElementById('polaroidGallery');
 const closePolaroid = document.getElementById('closePolaroid');
-let polaroidItems = [];
-
-// Initialize after DOM is loaded
+let polaroidItems = [];// Initialize after DOM is loaded
 function initPolaroids() {
   polaroidItems = Array.from(document.querySelectorAll('.polaroid-item'));
   console.log('Found', polaroidItems.length, 'polaroid items');
@@ -53,12 +51,9 @@ if (polaroidGallery) {
   });
 }
 
-// Initialize polaroid shake functionality
+// Initialize polaroid click-to-reveal functionality
 function setupPolaroidShake() {
   polaroidItems.forEach(item => {
-    let shakeCount = 0;
-    let shakeTimer = null;
-    
     // Remove old listeners by cloning
     const newItem = item.cloneNode(true);
     item.parentNode.replaceChild(newItem, item);
@@ -66,49 +61,15 @@ function setupPolaroidShake() {
     newItem.addEventListener('click', (e) => {
       e.stopPropagation();
       
-      // Don't shake if already developed
+      // If already developed, don't do anything
       if (newItem.classList.contains('developed')) {
-        console.log('Already developed!');
+        console.log('Already revealed!');
         return;
       }
       
-      // Add shake animation
-      newItem.classList.add('shaking');
-      shakeCount++;
-      
-      console.log('Shake count:', shakeCount);
-      
-      // Remove shake class after animation
-      setTimeout(() => {
-        newItem.classList.remove('shaking');
-      }, 500);
-      
-      // Clear previous timer
-      if (shakeTimer) {
-        clearTimeout(shakeTimer);
-      }
-      
-      // If shaken 3 times, develop the photo
-      if (shakeCount >= 3) {
-        console.log('Developing photo...');
-        developPhoto(newItem);
-        shakeCount = 0;
-      } else {
-        // Reset shake count after 2 seconds
-        shakeTimer = setTimeout(() => {
-          shakeCount = 0;
-          console.log('Shake count reset');
-        }, 2000);
-      }
-    });
-    
-    // Double click to develop (alternative)
-    newItem.addEventListener('dblclick', (e) => {
-      e.stopPropagation();
-      if (!newItem.classList.contains('developed')) {
-        console.log('Double click - developing photo...');
-        developPhoto(newItem);
-      }
+      // Single click to reveal the photo
+      console.log('Revealing photo...');
+      developPhoto(newItem);
     });
   });
   
